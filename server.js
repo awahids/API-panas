@@ -7,7 +7,7 @@ const port = process.env.PORT || 1107
 
 app.use(express.json())
 app.use(cors())
-app.use('/home', indexRouter)
+app.use('/', indexRouter)
 
 app.get("/", (req,res)=>{
     res.json({
