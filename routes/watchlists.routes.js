@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const watchlistController = require('../controllers/watchlistControllers')
+const watchlistController = require('../controllers/watchListControllers')
 const auth = require('../middlewares/authentication')
 // const authUser = require('../middlewares/authorization')
 

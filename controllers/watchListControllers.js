@@ -1,7 +1,7 @@
 const { Watchlists, Users, Movies } =  require('../models')
 
 module.exports = {
-    addWachlist: async (req, res) => {  //nanti lanjut biar adem
+    addWachlist: async (req, res) => {
         const UserId = req.users.id
         const body = req.body
 
