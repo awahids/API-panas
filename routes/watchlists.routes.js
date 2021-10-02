@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const watchlistController = require('../controllers/watchlistControllers')
 const auth = require('../middlewares/authentication')
-const authUser = require('../middlewares/authorization')
+// const authUser = require('../middlewares/authorization')
 
 router.post('/', auth, watchlistController.addWachlist) //login-auth-admin
 router.get('/:id', auth, watchlistController.getById)
