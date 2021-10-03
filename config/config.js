@@ -8,12 +8,7 @@ module.exports =
     "password": process.env.DB_PASS,
     "database": process.env.DB_NAME,
     "host": process.env.DB_HOST,
-    "dialect": "postgres",
-    "dialectOptions": {
-      "ssl": {
-        "rejectUnauthorized": false
-      }
-    }
+    "dialect": "postgres"
   },
   "test": {
     "username": "root",
@@ -23,7 +18,7 @@ module.exports =
     "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "HEROKU_POSTGRESQL_BLUE_URL",
+    "use_env_variable": "DATABASE_URL",
     "protocol": "postgres",
     "dialect": "postgres",
     "dialectOptions": {

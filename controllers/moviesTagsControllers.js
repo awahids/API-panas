@@ -2,85 +2,103 @@ const { MoviesTags, Tags, Movies } = require('../models');
 
 
 class MoviesTagsControllers {
-    static create (req, res, next) {
-        let { TagId, MovieId } = req.body;
+    static async create (req, res, next) {
+        let { MovieId, TagId } = req.body;
 
-        MoviesTags.create({
+        const checkMovieId = await Movies.findOne({
+            where: {
+                id: MovieId
+            }
+        })
+
+        const checkTagId = await Tags.findOne({
+            where: {
+                id: TagId
+            }
+        })
+
+        if(!checkMovieId || !checkTagId) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Movie or Tag Not Found"
+            })
+        }
+
+        const dataMovieTag = await MoviesTags.findOne({
+            where: {
+                MovieId: MovieId,
+                TagId: TagId
+            }
+        });
+
+        if(dataMovieTag) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Movie have already the Tag, please input another"
+            })
+        } else {const createTagMovie = await MoviesTags.create({
             MovieId: MovieId,
             TagId: TagId
-        })
-        .then(data => {
-            res.status(201).json({ message: 'movies tags models has been created'})
-        })
-        .catch(next);
-    };
-
-    static getAllMoviesByTag(req, res, next) {
-        let { page } = req.params;
-
-        if(!page) {
-            page = 1
-        }
-        MoviesTags.findAll({
-            include: [
-                {
-                    model: Movies
-                },
-                {
-                    model: Tags
-                }
-            ],
-            offset: (15*(page-1))+1,
-            limit: 15
+        })}
+        return res.status(201).json({
+            status: "success",
+            message: 'movies tags models has been created'
         });
-        res.status(200).json(MoviesTags)
+        
     };
 
-    static getMoviesByTag(req, res, next) {
-        let { TagId, page } = req.params;
-
-        MoviesTags.findAndCountAll({
-            where: { 
-                TagId: TagId
-            },
-            include: [
-                {
-                    model: Movies
-                },
-                {
-                    model: Tags
-                } 
-            ],
-            offset: (15*(page-1))+1,
-            limit: 15
-        });
-        res.status(200).json(MoviesTags)
-    };
-
-    static getTagsByMovie(req, res, next) {
-        let { MovieId } = req.params;
-
-        MoviesTags.findAll({
-            where: { 
-                MovieId: MovieId
-            },
-            include: [
-                {
-                    model: Movies
-                },
-                {
-                    model: Tags
-                } 
-            ],
-        });
-        res.status(200).json(MoviesTags)
-    };
-
-    static update (req, res, next){
+    static async update (req, res, next){
         let { id } = req.params;
         let { MovieId, TagId } = req.body;
 
-        MoviesTags.update({
+        const checkMovieId = await Movies.findOne({
+            where: {
+                id: MovieId
+            }
+        })
+
+        const checkTagId = await Tags.findOne({
+            where: {
+                id: TagId
+            }
+        })
+
+        if(!checkMovieId || !checkTagId) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Movie or Tag Not Found"
+            })
+        }
+
+        const dataMovieTag = await MoviesTags.findOne({where: {id: id}});
+
+        if(!dataMovieTag) {
+            return res.status(400).json({
+                status: "failed",
+                message: `Movies tags id ${id} has not found`
+            })
+        } else if (!MovieId || !TagId) {
+            return res.status(400).json ({
+                status: "failed",
+                message: "Please fill the required"
+            })
+        } 
+
+        const dataUpdateTag = await MoviesTags.findOne({
+            where: {
+                MovieId: MovieId,
+                TagId: TagId
+            }
+        });
+
+        if(dataUpdateTag) {
+            return res.status(400).json({
+                status: "failed",
+                message: "Movie already have the Tag"
+            });
+        };
+
+        const createUpdateTag = await MoviesTags.update({
             MovieId: MovieId,
             TagId: TagId
         }, {
@@ -88,32 +106,38 @@ class MoviesTagsControllers {
                 id: id
             }
         })
-        .then(data => {
-            if(!data) {
-                    throw { message: `Movies Genres id ${id} has not found`}
-                } else {
-                    res.status(200).json({ message: `Movie id ${MovieId} with Genres id ${id} has been updated`})
-            }
-        });
+        
+        if(createUpdateTag) {
+            return res.status(200).json({
+                status: "Success",
+                message: `Movie id ${MovieId} has been updated`
+            })
+        }
     };
+        
+    
 
-    static delete (req, res, next) {
+    static async delete (req, res, next) {
         let { id } = req.params;
+        const idMovieTag = await MoviesTags.findOne({where: {id:id}});
 
-        MoviesTags.destroy({
-            where : {
-                id: id
-            }
+        if(!idMovieTag) {
+            return res.status(400).json({
+                status: "failed",
+                message: `Movies tags id ${id} has not found`
+            })
+        } else {
+            MoviesTags.destroy({
+                where : {
+                    id: id
+                }
+            })
+        }
+        return res.status(200).json({ 
+            status: "success",
+            message: `Movies tags id ${id} has been deleted`
         })
-        .then(data => {
-            if(!data) {
-                throw { message: `Movies Genres id ${id} has not found`}
-            } else {
-                res.status(200).json({ message: `Movies Genres id ${id} has been deleted`})
-            };
-        });
     };
-
 }
 
 module.exports = MoviesTagsControllers;
