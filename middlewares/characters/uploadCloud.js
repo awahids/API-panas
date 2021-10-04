@@ -3,6 +3,8 @@ const path = require("path")
 const cloudinary = require("cloudinary").v2
 const { CloudinaryStorage } = require("multer-storage-cloudinary")
 
+const maxSize = 1 * 1000 * 1000
+
 require('dotenv').config()
 
 cloudinary.config({ 
@@ -23,7 +25,10 @@ module.exports = (fieldName) => {
         })
 
         const upload = multer({
-            storage: storage
+            storage: storage,
+            limits: {
+                fileSize: maxSize
+            }
         }).single(fieldName)
 
         return (req, res, next) => {

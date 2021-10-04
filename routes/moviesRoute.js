@@ -7,7 +7,7 @@ const uploadPoster = require('../middlewares/uploadPoster')
 
 router.post("/post", auth, author.authAdmin, uploadPoster("poster"), movies.postMovie)  
 router.get("/:id", movies.getOneMovie)
-router.get("/all/:page", movies.getAllMovies)
+router.get("/", movies.getAllMovies)
 router.get("/genre/:name/:page", movies.getAllMoviesByGenre)
 router.get("/listgenre/:id", movies.getAllGenreByMovieId)
 router.get("/artist/:id", movies.getAllMoviesByArtistId)

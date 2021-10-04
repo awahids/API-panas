@@ -104,11 +104,12 @@ module.exports = {
     },
 
     getAllMovies : async (req, res) => {
-        const limit = 15;
-        const page = parseInt(req.params.page);
-        const offset = limit * (page - 1);
-
+        
         try {
+            const limit = 15;
+            const page = parseInt(req.query.page);
+            const offset = limit * (page - 1);
+            
             const MoviesData = await Movies.findAll({
                 limit : limit,
                 offset : offset,
@@ -139,6 +140,7 @@ module.exports = {
                 }
             });
         } catch (error) {
+            console.log("🚀 ~ file: moviesControllers.js ~ line 142 ~ getAllMovies: ~ error", error)
             return res.status(500).json({
                 status : "failed",
                 message : "Internal Server Error"
@@ -148,7 +150,7 @@ module.exports = {
 
     getAllMoviesByGenre : async (req, res) => {
         const limit = 15;
-        const page = parseInt(req.params.page);
+        const page = parseInt(req.query.page);
         const offset = limit * (page - 1);
         const names = req.params.name
 
