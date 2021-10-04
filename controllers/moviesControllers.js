@@ -104,16 +104,24 @@ module.exports = {
     },
 
     getAllMovies : async (req, res) => {
-        
+        const queryTitle = req.query.title ? req.query.title : ""
+        console.log("🚀 ~ file: moviesControllers.js ~ line 108 ~ getAllMovies: ~ queryTitle", queryTitle)
+
         try {
             const limit = 15;
             const page = parseInt(req.query.page);
             const offset = limit * (page - 1);
-            
+
             const MoviesData = await Movies.findAll({
                 limit : limit,
                 offset : offset,
-                order : [["createdAt", "DESC"]]
+                order : [["createdAt", "DESC"]],
+                where : {
+                    title : {
+                        [sequelize.Op.iLike] : "%" + queryTitle + "%"
+                    } 
+                },
+
             }); 
             
             if(!MoviesData) {
@@ -470,39 +478,5 @@ module.exports = {
                 message : "Internal Server Error"
             })
         }
-    },
-
-    searchMoviesbyTitle : async (req, res) => {
-        const titles = req.params.title
-        try {
-            const datamovie = await Movies.findAll({
-                where : {
-                    title : {
-                        [sequelize.Op.iLike] : "%" + titles + "%"
-                    } 
-                },
-                limit : 15
-            })
-
-            if(datamovie == "search") {
-                const allmovie = await Movies.findAll()
-                return res.status(200).json({
-                    status : "success",
-                    messsage : "Successfully retrieve data movie",
-                    result : allmovie
-                })
-            }
-
-            return res.status(200).json({
-                status : "success",
-                messsage : "Successfully retrieve data movie",
-                result : datamovie
-            })
-        } catch (error) {
-            return res.status(500).json({
-                status : "failed",
-                message : "Internal Server Error"
-            })
-        }
-    },
+    }
 }
