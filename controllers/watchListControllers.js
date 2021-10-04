@@ -3,12 +3,12 @@ const { Watchlists, Users, Movies } =  require('../models')
 module.exports = {
     addWachlist: async (req, res) => { 
         const UserId = req.users.id
-        const movieid = req.params.movieid
+        const id = req.body.movieid
 
         try {
             const checkMovie = await Watchlists.findOne({
                 where: {
-                    MovieId: movieid,
+                    MovieId: id,
                     UserId
                 }
             })

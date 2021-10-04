@@ -8,7 +8,7 @@ const uploadAvatar = require('../middlewares/uploadAvatar')
 router.post("/login", users.login) 
 router.post("/register", uploadAvatar("img"), users.register) 
 router.get("/:id", auth, users.getOneUser)
-router.put("/data/:id", auth, author.authUser, uploadAvatar("img"), users.updateDataUsers)
-router.delete("/delete/:id", auth, author.authUser, users.deleteUsers)
+router.put("/:id", auth, author.authUser, uploadAvatar("img"), users.updateDataUsers)
+router.delete("/:id", auth, author.authUser, users.deleteUsers)
 
 module.exports = router
